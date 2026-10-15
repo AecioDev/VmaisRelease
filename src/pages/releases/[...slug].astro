@@ -1,0 +1,34 @@
+---
+import { getCollection, render } from 'astro:content';
+import ReleaseLayout from '../../layouts/ReleaseLayout.astro';
+import { ordenarReleases, url, type Secao } from '../../utils';
+
+export async function getStaticPaths() {
+  const todas = ordenarReleases(await getCollection('releases'));
+  return todas.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: { entry, maisNova: todas[i - 1], maisAntiga: todas[i + 1] },
+  }));
+}
+
+const { entry, maisNova, maisAntiga } = Astro.props;
+const { Content, remarkPluginFrontmatter } = await render(entry);
+const secoes = (remarkPluginFrontmatter.secoes ?? []) as Secao[];
+const { versao, banco, data, tema } = entry.data;
+---
+<ReleaseLayout titulo={`VMais Release ${versao}`} versao={versao} banco={banco} data={data} tema={tema} secoes={secoes}>
+  <Content />
+  <nav class="pager" aria-label="Navegação entre versões">
+    {maisAntiga ? (
+      <a class="prev" href={url(`releases/${maisAntiga.id}/`)} rel="prev">
+        <small>&larr; Versão anterior</small><strong>{maisAntiga.data.versao}</strong>
+      </a>
+    ) : <span />}
+    <a class="all" href={url()}>Todas as versões</a>
+    {maisNova ? (
+      <a class="next" href={url(`releases/${maisNova.id}/`)} rel="next">
+        <small>Próxima versão &rarr;</small><strong>{maisNova.data.versao}</strong>
+      </a>
+    ) : <span />}
+  </nav>
+</ReleaseLayout>

@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import ReleaseLayout from '../layouts/ReleaseLayout.astro';
+import { formatarData, ordenarReleases, temaHtml, url } from '../utils';
+
+const releases = ordenarReleases(await getCollection('releases'));
+---
+<ReleaseLayout titulo="VMais Releases" indice>
+  <ul class="release-list" style="padding-block: 40px 0">
+    {releases.map((r, i) => (
+      <li>
+        <a class={`release-card${i === 0 ? ' latest' : ''}`} href={url(`releases/${r.id}/`)}>
+          <span class="top">
+            <span class="ver">Release {r.data.versao}</span>
+            {i === 0 && <span class="badge">Última versão</span>}
+          </span>
+          <span class="info-line">
+            {formatarData(r.data.data)} · banco de dados versão {r.data.banco}
+          </span>
+          <span class="tema" set:html={temaHtml(r.data.tema)} />
+        </a>
+      </li>
+    ))}
+  </ul>
+</ReleaseLayout>

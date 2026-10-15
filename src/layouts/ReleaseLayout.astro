@@ -1,0 +1,84 @@
+---
+import '../styles/release.css';
+import { formatarData, temaHtml, url, type Secao } from '../utils';
+
+interface Props {
+  titulo: string;
+  /** Página de índice: capa curta, sem dados da release. */
+  indice?: boolean;
+  versao?: string;
+  banco?: number;
+  data?: Date;
+  tema?: string;
+  secoes?: Secao[];
+}
+
+const { titulo, indice = false, versao = '', banco, data, tema = '', secoes = [] } = Astro.props;
+const dataFormatada = data ? formatarData(data) : '';
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{titulo}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+  </head>
+  <body>
+    {indice ? (
+      <header class="hero short">
+        <div class="wrap">
+          <p class="eyebrow">VMais · Notas da versão</p>
+          <h1>Todas as versões</h1>
+          <p class="lede">Histórico das releases do sistema VMais, da mais recente para a mais antiga.</p>
+        </div>
+      </header>
+    ) : (
+      <Fragment>
+      <header class="hero">
+        <div class="wrap">
+          <a class="back" href={url()}>&larr; Todas as versões</a>
+          <p class="eyebrow">VMais · Notas da versão</p>
+          <h1>Release {versao}</h1>
+          <p class="lede" set:html={temaHtml(tema)} />
+          <dl class="meta" style="margin:0">
+            <div><dt>Versão do sistema</dt><dd>{versao}</dd></div>
+            <div><dt>Banco de dados</dt><dd>versão {banco}</dd></div>
+            <div><dt>Documento gerado em</dt><dd>{dataFormatada}</dd></div>
+          </dl>
+          <div class="legend" role="group" aria-label="Legenda de status">
+            <span>Legenda:</span>
+            <span class="pill ok">Testado</span>
+            <span class="pill warn">Implementado, ainda não testado</span>
+            <span class="pill pend">Pendente / não incluído</span>
+          </div>
+        </div>
+      </header>
+      {secoes.length > 0 && (
+        <nav class="toc" aria-label="Seções">
+          <div class="wrap">
+            {secoes.map((s) => <a href={`#${s.id}`}>{s.titulo}</a>)}
+          </div>
+        </nav>
+      )}
+      </Fragment>
+    )}
+
+    <main class="wrap">
+      <slot />
+    </main>
+
+    <footer>
+      <div class="wrap">
+        {indice
+          ? 'VMais · Notas da versão'
+          : `VMais · Release ${versao} · banco de dados versão ${banco} · documento gerado em ${dataFormatada}`}
+      </div>
+    </footer>
+  </body>
+</html>
