@@ -169,3 +169,7 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-
 .pager strong { font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .pager .all { align-items: center; justify-content: center; font-weight: 600; }
 .pager .next { text-align: right; margin-left: auto; }
+
+/* rodapé centralizado */
+footer { text-align: center; }
+footer .dev { margin-top: 8px; font-weight: 600; color: var(--fg); }
