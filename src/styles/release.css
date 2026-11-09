@@ -173,3 +173,6 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-
 /* rodapé centralizado */
 footer { text-align: center; }
 footer .dev { margin-top: 8px; font-weight: 600; color: var(--fg); }
+
+/* espaço entre caixas de destaque consecutivas */
+.info + .info, .info + .note, .note + .info, .note + .note { margin-top: 14px; }
